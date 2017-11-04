@@ -9,6 +9,16 @@ def change_text(root,ilabel,text,ftext,iclr,fclr,spd): # function to change stat
     ilabel.config(text=ftext,fg=fclr);
     root.update()
 
+def add_connector(addbox,ilabel,name,url,username,passwd):
+    global userb
+    if(not name or not url or not username or not passwd):
+        change_text(addbox,ilabel,'Please Fill All Entries ','Enter Details','red','white',1)
+    else:
+        inserted=databs.new_entry(userb,name,url,username,passwd)
+        if(inserted==0):
+            change_text(addbox,ilabel,'Error Occured.Please Try Again','Enter Details','red','white',1)
+        else:
+            main_box(inserted,addbox)
 def new_entry_box(details,master):
     master.destroy()
     addbox = Tk()
@@ -30,12 +40,11 @@ def new_entry_box(details,master):
     use_name=Entry(addbox,width=34,fg="white",bg="#404042",borderwidth=3,font="Tahoma 12",insertbackground="white")
     use_name.grid(row=3,column=1,padx=(5,10),pady=(5,5),columnspan=2)
 
-
     Label(addbox,text='Password',fg="#ffffff",font="Tahoma 12 bold",bg="#404042").grid(row=5,column=0,padx=(10,5),pady=(5,5))
     pass_wd=Entry(addbox,width=34,fg="white",bg="#404042",borderwidth=3,font="Tahoma 12",insertbackground="white")
     pass_wd.grid(row=5,column=1,padx=(5,10),pady=(5,5),columnspan=2)
 
-    Button(addbox,text="Add",relief=GROOVE,font="Tahoma 12",fg="white",bg="#404042",width=8).grid(row=6,column=0,columnspan=2,padx='10px',pady='5px')
+    Button(addbox,text="Add",relief=GROOVE,font="Tahoma 12",fg="white",bg="#404042",width=8,command=lambda:add_connector(addbox,ilabel,name.get(),url.get(),use_name.get(),pass_wd.get())).grid(row=6,column=0,columnspan=2,padx='10px',pady='5px')
     Button(addbox,text="Cancel",relief=GROOVE,font="Tahoma 12",fg="white",bg="#404042",width=8,command=lambda:main_box(details,addbox)).grid(row=6,column=1,columnspan=2,padx='10px',pady='5px')
 
 
@@ -74,7 +83,7 @@ def toggler(lab,btn): #Toggles Gui  b/w Login and Creator
         root.update()
 
 def connector(user,passwd):  #if check == 0 Login and if check ==1 Create User
-    global check ,root,ilabel
+    global check ,root,ilabel,userb
     if(check==0):
         inserted=databs.log_in(user,passwd)
         if(inserted==0):
@@ -83,6 +92,7 @@ def connector(user,passwd):  #if check == 0 Login and if check ==1 Create User
             print inserted
             change_text(root,ilabel,"Please wait.",'Please wait..',"#00cccc",fclr,1)
             change_text(root,ilabel,"Please wait..",'Logged In',"#00cccc",'#00cccc',1)
+            userb=user
             root.destroy()
             main_box(inserted)
     elif(check==1):
@@ -133,7 +143,7 @@ check=0
 root =0
 fclr="white"
 ftext="Enter Username and Password"
-ilabel=0
+userb=0
 
 #checks whether the to login or create new user.
 #if 0 login if 1 then create account is used
