@@ -33,6 +33,7 @@ def clickcheck(user):
         return False
 
 def auto_login(url,username,password):
+    #printurl,username,password
     opts = ChromeOptions()
     opts.add_experimental_option("detach", True)
     driver = Chrome(chrome_options=opts)
@@ -53,7 +54,7 @@ def auto_login(url,username,password):
     if(user==False or clickcheck(user) ==False):
         user = find_element(driver,"input[type='text']")
         user = find_visible(user)
-    print user
+    #printuser
     if(user):
         user.click()
         user.send_keys(username)
@@ -68,10 +69,3 @@ def auto_login(url,username,password):
             passwd.send_keys(password)
             passwd.send_keys(Keys.TAB)
             passwd.send_keys(Keys.ENTER)
-
-
-use='https://accounts.google.com/signin/v2/identifier?service=mail&passive=true&rm=false&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ss=1&scc=1&ltmpl=default&ltmplcache=2&emr=1&osid=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin'
-us='https://offcloud.com/#'
-u='https://www.linkedin.com'
-s='https://www.udemy.com'
-auto_login(use,'ashutosh.extrimis.2403@gmail.com','ashutosh2403')
