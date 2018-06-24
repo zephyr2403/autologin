@@ -1,7 +1,11 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver import ChromeOptions, Chrome
+from lib.selenium import webdriver
+from lib.selenium.webdriver.common.keys import Keys
+from lib.selenium.webdriver import ChromeOptions, Chrome
+from lib.selenium.webdriver.support.ui import WebDriverWait
+from lib.selenium.webdriver.support import expected_conditions as EC
+from lib.selenium.webdriver.common.by import By
 import time
+
 
 def find_element(driver,str):
     try:
@@ -33,12 +37,11 @@ def clickcheck(user):
         return False
 
 def auto_login(url,username,password):
-    #printurl,username,password
+
     opts = ChromeOptions()
     opts.add_experimental_option("detach", True)
     driver = Chrome(chrome_options=opts)
     driver.get(url)
-    i=0
     partial=link_text(driver,'already')
     if(not partial):
         partial=link_text(driver,'Already')
@@ -48,24 +51,25 @@ def auto_login(url,username,password):
                 partial=link_text(driver,'Sign In')
     if(partial):
         partial.click()
-        time.sleep(3)
+        time.sleep(2)
     user = find_element(driver,"input[type='email']")
     user = find_visible(user)
     if(user==False or clickcheck(user) ==False):
         user = find_element(driver,"input[type='text']")
         user = find_visible(user)
-    #printuser
+
     if(user):
         user.click()
         user.send_keys(username)
+
         passwd=find_element(driver,"input[type='password']")
         passwd = find_visible(passwd)
         if(not passwd):
             user.send_keys(Keys.ENTER)
-            time.sleep(3)
-            passwd=find_element(driver,"input[type='password']")
-            passwd = find_visible(passwd)
+
+            passwd=WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "input[type='password']")))
         if(passwd):
             passwd.send_keys(password)
+
             passwd.send_keys(Keys.TAB)
             passwd.send_keys(Keys.ENTER)
